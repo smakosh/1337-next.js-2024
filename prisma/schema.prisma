@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  username  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  trips     Trip[]
+}
+
+model Trip {
+  id          String  @id @default(uuid())
+  type        String // flight, train, bus, ferry
+  from        String // starting location
+  to          String // destination
+  time        String // time of the trip (e.g., '14:30')
+  day         String // day of the trip (e.g., 'Mon, 15 Aug')
+  isPast      Boolean @default(false) // whether the trip is in the past
+  description String  @default("Trip description") // Trip desc
+  image       String  @default("https://images.unsplash.com/photo-1733160972444-b31eb430072b?q=80&w=3132&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D") // Trip image URL
+  user        User    @relation(fields: [userId], references: [id])
+  userId      String // foreign key to the User
+}
